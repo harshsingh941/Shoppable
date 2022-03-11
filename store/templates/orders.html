@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+
+
+
+{% block content %}
+{% load cart %}
+{% load custom_filter %}
+<style>
+    .footer-bottom {
+        position: relative;
+        padding: 25px 0;
+        background: #000000;
+    }
+    
+    .footer-bottom .copyright {
+        text-align: left;
+    }
+    
+    .footer-bottom .template-by {
+        text-align: right;
+    }
+    
+    .footer-bottom .copyright p,
+    .footer-bottom .template-by p {
+        color: #ffffff;
+        font-weight: 400;
+        margin: 0;
+    }
+    
+    .footer-bottom .copyright p a,
+    .footer-bottom .template-by p a {
+        font-weight: 600;
+    }
+    
+    .footer-bottom .copyright p a:hover,
+    .footer-bottom .template-by p a:hover {
+        color: #ffffff;
+    }
+    
+    @media (max-width: 768.98px) {
+        .footer-bottom .copyright,
+        .footer-bottom .template-by {
+            text-align: center; 
+        } 
+    }
+</style>
+<div class="container">
+    <div class="border rounded p-4 m-4">
+        <p class="display-4 text-center">Your Orders</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sno.</th>
+                    <th>Item</th>
+                    <th>Product</th>
+                    <th>Date</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Status</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for order in orders %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td><img class="rounded-circle" style="height: 80px;" src="{{order.product.image.url}}"></td>
+                    <td>{{order.date}}</td>
+                    <td>{{order.price|currency}}</td>
+                    <td>{{order.price|currency}}</td>
+                    <td>{{order.quantity}}</td>
+                    <td>{{order.quantity|multiply:order.price|currency}}</td>
+                    {% if order.status %}
+                    <td><div class="alert alert-success">Completed</div></td>
+                    {% else %}
+                    <td><div class="alert alert-warning">Pending</div></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+               
+            </tbody>
+           
+        </table>
+        
+        
+    </div>
+
+</div>
+
+
+
+  
+
+
+
+{% endblock %}

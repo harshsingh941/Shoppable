@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load cart %}
+
+{% load custom_filter %}
+
+{% load static %}
+<style>
+  #prod:hover{
+    background:  #f857a8;
+  }
+  #prod:active{
+    background:  #f857a8;
+  }
+  .footer {
+    position: relative;
+    padding: 30px 0 0 0;
+    background: #ffffff;
+}
+
+  .footer .payment-method,
+.footer .payment-security {
+    overflow: hidden;
+}
+
+.footer .payment-method {
+    text-align: left;
+}
+
+.footer .payment-security {
+    text-align: right;
+}
+
+@media (max-width: 768.98px) {
+    .footer .payment-method {
+        margin-bottom: 15px;
+    }
+    
+    .footer .payment-method,
+    .footer .payment-security {
+        text-align: center; 
+    } 
+}
+
+.footer .payment-method h2,
+.footer .payment-security h2 {
+    display: inline-block;
+    margin: 0 10px 0 0;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 22px;
+}
+
+.footer .payment-method img,
+.footer .payment-security img {
+    height: 25px;
+}
+
+.footer .footer-widget {
+  position: relative;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.footer .footer-widget h2 {
+  font-size: 25px;
+  white-space: nowrap;
+  margin-bottom: 20px; 
+}
+
+.footer .footer-widget ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer .footer-widget ul li {
+  margin-bottom: 12px; 
+}
+
+.footer .footer-widget ul li:last-child {
+  margin-bottom: 0; 
+}
+
+.footer .footer-widget ul li a {
+  color: #353535;
+  white-space: nowrap;
+  display: block;
+  line-height: 23px;
+  transition: all .3s;
+}
+
+.footer .footer-widget ul li a::before {
+  content: '\f105';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  padding-right: 5px;
+}
+
+.footer .footer-widget ul li a:hover {
+  color: #FF6F61;
+}
+
+.footer .footer-widget ul li a:hover::before {
+  content: '\f101';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+}
+.footer .social {
+  position: relative;
+  width: 100%;
+}
+
+.footer .social a {
+  display: inline-block;
+  margin: 10px 5px 0 0;
+  width: 40px;
+  height: 40px;
+  padding: 6px 0;
+  text-align: center;
+  font-size: 18px;
+  color: #353535;
+  border: 1px solid #353535;
+  border-radius: 4px;
+  transition: all .3s;
+}
+
+.footer .social a:hover {
+  color: #FF6F61;
+  border-color: #FF6F61;
+}
+.footer {
+  position: relative;
+  padding: 30px 0 0 0;
+  background: #ffffff;
+}
+.btn {
+  float: right;
+  border: none;
+  color: #000000;
+  background: #FF6F61;
+}
+
+.btn:hover {
+  color: #FF6F61;
+  background: #ffffff;
+}
+#product-item:hover {
+  color: #FF6F61;
+  background: #ffffff;
+  border: 1px solid #FF6F61;
+}
+
+</style>
+
+<!-- body   -->
+<div class="container-fluid mt-3">
+  <div class="row">
+    
+    <!-- filter -->
+    
+    <div class="col-lg-3 mx-auto">
+      <div class="list-group">
+        <a href="/" class="list-group-item list-group-item-action " id="prod">All Products</a>
+
+        {% for category in categories %}
+        <a href="/?category={{category.id}}" class="list-group-item list-group-item-action" id="prod">{{category.name}}</a>
+        {% endfor %}
+      </div>
+    </div>
+    
+    
+    
+    <!--All Products-->
+    
+    <div id='product' class="col-lg-9 mx-auto">
+      <div class="row mx-auto">
+        {% for product in products %}
+        
+        <div class="card mx-auto mb-3" id= {{product.id}} style="width: 18rem;">
+            <img src="{{product.image.url}}" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">{{product.name}}</h5>
+              <p class="card-text"><b>{{product.price|currency}}</b></p>
+              {{ product|is_in_cart:request.session.cart }}
+              
+
+
+            </div>
+            
+            <div class="card-footer p-0 row ni-gutters">
+              {% if product|is_in_cart:request.session.cart %}
+              <div class="row" >
+
+                <form action="/#{{product.id}}" method="post" class="col-2" >
+                  {% csrf_token %}
+                  <input type="text" hidden name="product" value="{{product.id}}">
+                  <input type="text" hidden name="remove" value="True">
+                  <input type="submit" value="-" class="btn btn-secondary">
+                </form>
+
+                <div class="text-center col"> {{product|cart_quantity:request.session.cart}} in cart</div>
+                
+                <form action="/#{{product.id}}" method="post" class="col-2" >
+                  {% csrf_token %}
+                  <input type="text" hidden name="product" value="{{product.id}}">
+                  <input type="submit" value="+" class="btn btn-secondary">
+                </form>
+              
+              </div> 
+              {% else %}
+              <form action="/#{{product.id}}" method="POST" class="btn-block">
+                {% csrf_token %}
+                <input type="text" hidden name="product" value="{{product.id}}">
+                <input type="submit" class="btn btn-light border btn-block " value="Add to Cart" id="btn">
+              </form>
+              {% endif %}
+              
+            </div>
+          </div>
+        {% endfor %}
+    </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-3 col-md-6">
+        <div class="footer-widget">
+            <h2>Get in Touch</h2>
+            <div class="contact-info">
+              <p><i class="fa fa-map-marker"></i>123 K lucknow,INDIA</p>
+              <p><i class="fa fa-envelope"></i>email@example.com</p>
+              <p><i class="fa fa-phone"></i>+123-456-7890</p>
+            </div>
+        </div>    
+      </div>
+      <div class="col-lg-3 col-md-6">
+          <div class="footer-widget">
+              <h2>Follow Us</h2>
+              <div class="contact-info">
+                  <div class="social">
+                    <a href=""><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/facebook/facebook-plain.svg" /></a>
+                    <a href=""><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" /></a>
+                    <a href=""><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" /></a>  
+                  </div>
+              </div>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="row payment align-items-center">
+    <div class="col-md-6">
+        <div class="payment-method">
+            <h2>We Accept:</h2>
+            <img src="{% static 'image/payment-method.png' %}" alt="Payment Method" />
+        </div>
+    </div>
+    <div class="col-md-6">
+      <div class="payment-security">
+          <h2>Secured By:</h2>
+          <img src="{% static 'image/godaddy.svg' %}" alt="Payment Security" />
+          <img src="{% static 'image/norton.svg' %}" alt="Payment Security" />
+          <img src="{% static 'image/ssl.svg' %}" alt="Payment Security" />
+      </div>
+  </div>
+</div>
+  
+</div>
+{% endblock %}
+
+   
+
+   
+    
